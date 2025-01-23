@@ -73,3 +73,4 @@ env.properties
 # Operating system-specific files
 .DS_Store     # MacOS
 Thumbs.db     # Windows
+backend/src/main/resources/env.properties
