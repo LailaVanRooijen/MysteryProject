@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: Mystery Project
+  config:
+    import:
+      "env.properties"
+  frontend-client: http://localhost:5173
+  datasource:
+    url: jdbc:postgresql://localhost:${DB_PORT}/mystery
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    logging:
+      level:
+        org:
+          hibernate:
+            SQL: false
+    token:
+      signing:
+        key: ${TOKEN_KEY}
+    security:
+      user: ${SECURITY_USERNAME}
+      password: ${SECURITY_PASSWORD}
+
+
