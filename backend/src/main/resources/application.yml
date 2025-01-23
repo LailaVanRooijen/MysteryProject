@@ -22,6 +22,8 @@ spring:
         org:
           hibernate:
             SQL: false
+          springframework:
+            security: TRACE
     token:
       signing:
         key: ${TOKEN_KEY}
@@ -29,5 +31,22 @@ spring:
     user:
       name: ${SECURITY_USER}
       password: ${SECURITY_PASSWORD}
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH_CLIENT_ID}
+            client-secret: ${OAUTH_CLIENT_SECRET}
+            scope: profile,email
+            redirect-uri: "${BASE_URL}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+            user-name-attribute: sub
 
 

@@ -65,6 +65,7 @@ yarn.lock
 .env.development
 .env.production
 .env.test
+env.properties
 
 # Logs
 *.log
