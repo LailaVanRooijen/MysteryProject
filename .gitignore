@@ -1,16 +1,12 @@
-# Compiled class file
+# === Backend (Spring Boot) ===
+
+# Compiled class files
 *.class
 
-# Log file
+# Log files
 *.log
 
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# Package Files (JAR, WAR, NAR, EAR)
 *.jar
 *.war
 *.nar
@@ -19,6 +15,62 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+# Virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# Maven-specific
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+*.classpath
+*.project
+*.settings/
+
+# Operating system-specific files
+.DS_Store     # MacOS
+Thumbs.db     # Windows
+
+
+# === Frontend (React + TypeScript) ===
+
+# Node modules 
+node_modules/
+
+# Build output 
+build/
+dist/
+
+# npm-debug.log
+npm-debug.log*
+
+# Yarn-specific files
+.yarn/
+.yarnrc
+yarn.lock
+
+# TypeScript build info
+*.tsbuildinfo
+
+# IDE-specifieke bestanden
+.vscode/
+
+# environment variables (to store sensitive data)
+*.env        
+.env.local   
+.env.development
+.env.production
+.env.test
+env.properties
+
+# Logs
+*.log
+
+# Operating system-specific files
+.DS_Store     # MacOS
+Thumbs.db     # Windows
+backend/src/main/resources/env.properties
