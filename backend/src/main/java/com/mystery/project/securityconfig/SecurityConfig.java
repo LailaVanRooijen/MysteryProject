@@ -1,6 +1,5 @@
 package com.mystery.project.securityconfig;
 
-import com.mystery.project.mainconfiguration.Routes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,10 +14,8 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http.authorizeHttpRequests(
             authorize -> {
-              authorize.requestMatchers(Routes.BASE_ROUTE).permitAll();
               authorize.anyRequest().authenticated();
             })
-        .oauth2Login(Customizer.withDefaults())
         .formLogin(Customizer.withDefaults())
         .build();
   }
