@@ -1,14 +1,19 @@
+import { BrowserRouter, Route, Routes } from "react-router";
+
 import "@app/App.css";
 import "@app/index.css";
 
+import About from "@app/pages/About";
+import Home from "@app/pages/Home";
+
 function App() {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-16">
-      <h1 className="text-6xl font-bold underline">Hello world!</h1>
-      <button className="btn btn-lg btn-primary">
-        I'm a button. Click me!
-      </button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" index element={<Home />} />
+        <Route path="/about" index element={<About />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
