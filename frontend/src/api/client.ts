@@ -1,4 +1,7 @@
-import { Axios, AxiosRequestConfig } from "axios";
+import { Axios, AxiosRequestConfig, mergeConfig } from "axios";
+// @ts-expect-error - default config is not included in ts typings.
+// But it's required to create a new instance of axios.
+import defaultConfig from "axios/unsafe/defaults";
 
 const baseURL = new URL("/api/v1", import.meta.env.VITE_BACKEND_URL);
 
@@ -6,8 +9,8 @@ class ApiClient extends Axios {
   #interceptorIDs: Record<string, number> = {};
   #refreshToken?: string | null;
 
-  constructor(config?: AxiosRequestConfig) {
-    super(config);
+  constructor(config: AxiosRequestConfig = {}) {
+    super(mergeConfig(defaultConfig, config));
 
     this.interceptors.response.use(
       (response) => response,
