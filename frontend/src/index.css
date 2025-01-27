@@ -1,3 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "daisyui" {
+  /* See how to config: https://v5.daisyui.com/docs/config */
+}
+
+html,
+body,
+#root {
+  @apply h-full;
+}
