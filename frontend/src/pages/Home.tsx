@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 
-import apiClient from "@app/api/client";
+import { setTokens } from "@app/api/client";
 import { sayHello } from "@app/api/core";
 
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
         onClick={async () => {
           // Demo
           await sayHello();
-          apiClient.setTokens("access_token_value", "refresh_token_value");
+          setTokens("access_token_value", "refresh_token_value");
           await sayHello();
         }}
       >
