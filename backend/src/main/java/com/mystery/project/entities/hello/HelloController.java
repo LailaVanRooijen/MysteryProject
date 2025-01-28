@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(Routes.BASE_ROUTE)
+@CrossOrigin(origins = "${spring.frontend-client}")
 public class HelloController {
   @GetMapping
   public String sayHello() {
