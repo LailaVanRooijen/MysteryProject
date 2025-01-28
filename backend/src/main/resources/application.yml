@@ -29,3 +29,7 @@ spring:
     user:
       name: ${SECURITY_USER}
       password: ${SECURITY_PASSWORD}
+logging:
+  level:
+    com.mystery.project: TRACE
+    org.springframework.security: TRACE
