@@ -8,12 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping(Routes.AUTHENTICATION)
@@ -40,5 +41,14 @@ public class AuthenticationController {
     context.setAuthentication(authenticationResult);
     SecurityContextHolder.setContext(context);
     securityContextRepository.saveContext(context, request, response);
+  }
+
+  @GetMapping("/me")
+  public String me(@AuthenticationPrincipal UserDetails userDetails) {
+    if (userDetails == null) {
+      return "No current user.";
+    }
+
+    return userDetails.getUsername();
   }
 }
