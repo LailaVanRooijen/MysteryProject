@@ -36,8 +36,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(
             authorize -> {
               authorize
-                  .anyRequest()
-                  .permitAll();
+                  .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                  .anyRequest().authenticated();
             })
             .userDetailsService(customUserDetailsService)
         .formLogin(FormLoginConfigurer::disable)
