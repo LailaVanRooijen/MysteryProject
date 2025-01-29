@@ -4,6 +4,7 @@ import com.mystery.project.authentication.dtos.LoginRequestDto;
 import com.mystery.project.authentication.dtos.RegisterRequestDto;
 import com.mystery.project.authentication.exceptions.DuplicateDisplayNameException;
 import com.mystery.project.authentication.exceptions.DuplicateEmailException;
+import com.mystery.project.authentication.exceptions.EmailNotFoundException;
 import com.mystery.project.entities.user.Role;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,12 +29,12 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public Authentication registerUser(RegisterRequestDto registerRequestDto) {
-    User nameCheck = userRepository.findByDisplayName(registerRequestDto.displayName());
+    User nameCheck = userRepository.findByDisplayNameIgnoreCase(registerRequestDto.displayName()).orElse(null);
     if (nameCheck != null) {
       throw new DuplicateDisplayNameException("Display name is taken.");
     }
 
-    User emailCheck = userRepository.findByEmail(registerRequestDto.email());
+    User emailCheck = userRepository.findByEmailIgnoreCase(registerRequestDto.email()).orElse(null);
     if (emailCheck != null) {
       throw new DuplicateEmailException("Email is already registered.");
     }
@@ -55,5 +57,9 @@ public class AuthenticationService {
         new UsernamePasswordAuthenticationToken(
             loginRequestDto.email(), loginRequestDto.password());
     return authenticationManager.authenticate(authenticationRequest);
+  }
+
+  public User getUserByEmail(String email) {
+    return userRepository.findByEmailIgnoreCase(email).orElseThrow(()-> new EmailNotFoundException("A user with this email adress does not exist."));
   }
 }

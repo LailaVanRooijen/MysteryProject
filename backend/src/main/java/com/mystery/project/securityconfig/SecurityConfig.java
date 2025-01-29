@@ -1,6 +1,7 @@
 package com.mystery.project.securityconfig;
 
 import com.mystery.project.authentication.CustomUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,15 +27,19 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http.securityContext(
-            securityContext -> securityContext.securityContextRepository(securityContextRepository))
-        .authorizeHttpRequests(
-            authorize -> authorize
-                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
-                .anyRequest().authenticated())
+                    securityContext -> securityContext.securityContextRepository(securityContextRepository))
+            .authorizeHttpRequests(
+                    authorize -> authorize
+                            .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/logout").permitAll()
+                            .anyRequest().authenticated())
+            .logout(logout -> logout
+                    .logoutUrl("/api/v1/auth/logout")
+                    .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
+            )
             .userDetailsService(customUserDetailsService)
-        .formLogin(FormLoginConfigurer::disable)
-        .csrf(CsrfConfigurer::disable)
-        .build();
+            .formLogin(FormLoginConfigurer::disable)
+            .csrf(CsrfConfigurer::disable)
+            .build();
   }
 
   @Bean
