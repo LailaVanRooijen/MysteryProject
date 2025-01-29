@@ -1,7 +1,7 @@
-package com.mystery.project.controllers;
+package com.mystery.project.authentication;
 
-import com.mystery.project.exception.DuplicateDisplayNameException;
-import com.mystery.project.exception.DuplicateEmailException;
+import com.mystery.project.authentication.exceptions.DuplicateDisplayNameException;
+import com.mystery.project.authentication.exceptions.DuplicateEmailException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;

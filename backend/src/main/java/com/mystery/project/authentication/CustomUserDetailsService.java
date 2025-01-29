@@ -1,9 +1,9 @@
-package com.mystery.project.securityconfig;
+package com.mystery.project.authentication;
 
-import com.mystery.project.exception.EmailNotFoundException;
-import com.mystery.project.repositories.UserRepository;
+import com.mystery.project.authentication.exceptions.EmailNotFoundException;
+import com.mystery.project.entities.user.User;
+import com.mystery.project.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    var user = userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email);
     if (user == null) {
       throw new EmailNotFoundException("That email does not exist.");
     }

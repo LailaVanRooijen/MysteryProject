@@ -1,6 +1,5 @@
-package com.mystery.project.repositories;
+package com.mystery.project.entities.user;
 
-import com.mystery.project.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

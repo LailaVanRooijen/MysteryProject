@@ -1,3 +1,3 @@
-package com.mystery.project.services.authentication;
+package com.mystery.project.authentication.dtos;
 
 public record LoginRequestDto(String email, String password) {}

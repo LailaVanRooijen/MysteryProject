@@ -1,4 +1,4 @@
-package com.mystery.project.exception;
+package com.mystery.project.authentication.exceptions;
 
 public class DuplicateDisplayNameException extends RuntimeException {
   public DuplicateDisplayNameException(String message) {
