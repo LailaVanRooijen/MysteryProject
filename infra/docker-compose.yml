@@ -1,0 +1,38 @@
+# To spin up containers:
+#   1. Open the root folder of the project
+#   2. docker compose -f ./infra/docker-compose.yml up -d
+#     - "-f" - specify custom docker-compose file
+#     - "-d" - run docker containers in background
+
+# Set the project name
+name: "mystery-project"
+services:
+  postgres:
+    container_name: "mystery-postgres"
+    image: "postgres:17.2"
+    env_file:
+      - .env
+    secrets:
+      - db_password
+      - db_username
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_USER_FILE=/run/secrets/db_username
+    ports:
+      # It's a port mapping. We can not change default port.
+      # So, we should map the default port with outside port.
+      - ${DB_PORT}:5432
+    volumes:
+      - mystery-volume:/var/lib/db/data
+    restart: unless-stopped
+    cpu_count: 2
+
+volumes:
+  mystery-volume:
+
+secrets:
+  db_password:
+    file: secrets/db_password.txt
+  db_username:
+    file: secrets/db_username.txt

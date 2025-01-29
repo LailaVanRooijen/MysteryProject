@@ -38,10 +38,10 @@ Thumbs.db     # Windows
 
 # === Frontend (React + TypeScript) ===
 
-# Node modules 
+# Node modules
 node_modules/
 
-# Build output 
+# Build output
 build/
 dist/
 
@@ -60,12 +60,15 @@ yarn.lock
 .vscode/
 
 # environment variables (to store sensitive data)
-*.env        
-.env.local   
+*.env
+.env.local
 .env.development
 .env.production
 .env.test
 env.properties
+
+db_password.txt
+db_username.txt
 
 # Logs
 *.log
