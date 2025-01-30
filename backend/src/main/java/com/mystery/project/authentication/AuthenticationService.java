@@ -84,7 +84,7 @@ public class AuthenticationService {
     return userRepository
         .findByEmailIgnoreCase(email)
         .orElseThrow(
-            () -> new EmailNotFoundException("A user with this email adress does not exist."));
+            () -> new EmailNotFoundException("A user with this email address does not exist."));
   }
 
   public boolean isValidEmail(String email) {
