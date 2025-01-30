@@ -27,9 +27,9 @@ public class AuthenticationService {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
+
   private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
   private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
-
   private static final String PASSWORD_REGEX =
       "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
   private static final Pattern passwordPattern = Pattern.compile(PASSWORD_REGEX);
