@@ -9,9 +9,8 @@ import com.mystery.project.entities.user.Role;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
+import com.mystery.project.util.validation.UserValidator;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,23 +27,17 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
-  private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-  private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
-  private static final String PASSWORD_REGEX =
-      "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
-  private static final Pattern passwordPattern = Pattern.compile(PASSWORD_REGEX);
-
   public Authentication registerUser(RegisterRequestDto registerRequestDto) {
-    if (!isValidEmail(registerRequestDto.email())) {
+    if (!UserValidator.isValidEmail(registerRequestDto.email())) {
       throw new BadRequestException("Not a valid email address.");
     }
 
-    if (!isValidPassword(registerRequestDto.password())) {
+    if (!UserValidator.isValidPassword(registerRequestDto.password())) {
       throw new BadRequestException(
           "Password must be at least 8 characters long, contain at least one letter, one number, and one special character.");
     }
 
-    if (registerRequestDto.displayName().length() <= 3) {
+    if (!UserValidator.isValidDisplayName(registerRequestDto.displayName())) {
       throw new BadRequestException("Display name should have at least 3 characters");
     }
 
@@ -85,15 +78,5 @@ public class AuthenticationService {
         .findByEmailIgnoreCase(email)
         .orElseThrow(
             () -> new EmailNotFoundException("A user with this email address does not exist."));
-  }
-
-  public boolean isValidEmail(String email) {
-    Matcher matcher = emailPattern.matcher(email);
-    return matcher.matches();
-  }
-
-  public boolean isValidPassword(String password) {
-    Matcher matcher = passwordPattern.matcher(password);
-    return matcher.matches();
   }
 }
