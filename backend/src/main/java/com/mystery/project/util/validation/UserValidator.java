@@ -10,12 +10,12 @@ public class UserValidator {
       "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
   private static final Pattern passwordPattern = Pattern.compile(PASSWORD_REGEX);
 
-  public static boolean isValidEmail(String email) {
+  public static boolean isValidEmailPattern(String email) {
     Matcher matcher = emailPattern.matcher(email);
     return matcher.matches();
   }
 
-  public static boolean isValidPassword(String password) {
+  public static boolean isValidPasswordPattern(String password) {
     Matcher matcher = passwordPattern.matcher(password);
     return matcher.matches();
   }

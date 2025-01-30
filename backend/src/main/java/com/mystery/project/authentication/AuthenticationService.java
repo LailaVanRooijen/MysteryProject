@@ -28,11 +28,11 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public Authentication registerUser(RegisterRequestDto registerRequestDto) {
-    if (!UserValidator.isValidEmail(registerRequestDto.email())) {
+    if (!UserValidator.isValidEmailPattern(registerRequestDto.email())) {
       throw new BadRequestException("Not a valid email address.");
     }
 
-    if (!UserValidator.isValidPassword(registerRequestDto.password())) {
+    if (!UserValidator.isValidPasswordPattern(registerRequestDto.password())) {
       throw new BadRequestException(
           "Password must be at least 8 characters long, contain at least one letter, one number, and one special character.");
     }
