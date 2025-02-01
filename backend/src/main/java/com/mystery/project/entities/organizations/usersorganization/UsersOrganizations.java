@@ -1,5 +1,6 @@
 package com.mystery.project.entities.organizations.usersorganization;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mystery.project.entities.organizations.Organization;
 import com.mystery.project.entities.user.User;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ public class UsersOrganizations {
   @Id @GeneratedValue private Long id;
 
   @ManyToOne private User user;
-  @ManyToOne private Organization organization;
+  @ManyToOne @JsonBackReference private Organization organization;
   private OrganizationRole organizationRole;
 
   public UsersOrganizations(

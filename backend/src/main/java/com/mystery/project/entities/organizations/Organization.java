@@ -1,6 +1,8 @@
 package com.mystery.project.entities.organizations;
 
-import com.mystery.project.entities.user.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mystery.project.entities.organizations.usersorganization.UsersOrganizations;
+import com.mystery.project.exception.BadRequestException;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,9 @@ public class Organization {
   @Setter
   private String name;
 
-  @OneToMany private final List<User> users = new ArrayList<>();
+  @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonManagedReference
+  private final List<UsersOrganizations> usersOrganizations = new ArrayList<>();
 
   public Organization(String name) {
     this.name = name;

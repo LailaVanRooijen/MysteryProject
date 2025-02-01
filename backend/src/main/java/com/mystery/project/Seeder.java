@@ -37,7 +37,7 @@ public class Seeder implements CommandLineRunner {
         userRepository.findByDisplayNameIgnoreCase("chad").orElseThrow());
 
     organizationService.create(
-        new PostOrganization("Chad Industries"),
+        new PostOrganization("Chadette Industries"),
         userRepository.findByDisplayNameIgnoreCase("chadette").orElseThrow());
   }
 }

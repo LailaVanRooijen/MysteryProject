@@ -1,6 +1,9 @@
 package com.mystery.project.entities.user;
 
 import jakarta.persistence.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,17 +12,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "users")
 public class User implements UserDetails {
-  @Id private UUID id;
+  @Id @GeneratedValue private UUID id;
 
   @Column(unique = true, nullable = false)
   private String email;
@@ -33,6 +32,13 @@ public class User implements UserDetails {
   @Column
   @Enumerated(EnumType.STRING)
   private Role role;
+
+  public User(String email, String password, String displayName, Role role) {
+    this.email = email;
+    this.password = password;
+    this.displayName = displayName;
+    this.role = role;
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

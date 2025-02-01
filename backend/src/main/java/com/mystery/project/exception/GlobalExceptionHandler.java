@@ -8,10 +8,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ProblemDetail> badRequestHandler(BadRequestException exception) {
-        ProblemDetail problemDetail =
-                ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
-        return ResponseEntity.badRequest().body(problemDetail);
-    }
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ProblemDetail> badRequestHandler(BadRequestException exception) {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<ProblemDetail> entityNotFoundHandler(EntityNotFoundException exception) {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
 }
