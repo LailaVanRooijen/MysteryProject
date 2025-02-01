@@ -27,19 +27,30 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http.securityContext(
-                    securityContext -> securityContext.securityContextRepository(securityContextRepository))
-            .authorizeHttpRequests(
-                    authorize -> authorize
-                            .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api/v1/auth/logout").permitAll()
-                            .anyRequest().authenticated())
-            .logout(logout -> logout
+            securityContext -> securityContext.securityContextRepository(securityContextRepository))
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers(
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/register",
+                        "/api/v1/auth/logout",
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .logout(
+            logout ->
+                logout
                     .logoutUrl("/api/v1/auth/logout")
-                    .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
-            )
-            .userDetailsService(customUserDetailsService)
-            .formLogin(FormLoginConfigurer::disable)
-            .csrf(CsrfConfigurer::disable)
-            .build();
+                    .logoutSuccessHandler(
+                        (request, response, authentication) ->
+                            response.setStatus(HttpServletResponse.SC_OK)))
+        .userDetailsService(customUserDetailsService)
+        .formLogin(FormLoginConfigurer::disable)
+        .csrf(CsrfConfigurer::disable)
+        .build();
   }
 
   @Bean
@@ -54,7 +65,7 @@ public class SecurityConfig {
 
   @Bean
   public DaoAuthenticationProvider authenticationProvider(
-          UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+      UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     provider.setUserDetailsService(userDetailsService);
     provider.setPasswordEncoder(passwordEncoder);
