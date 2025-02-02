@@ -82,3 +82,5 @@ Babasse-Old-School-Fichiers-gif.ico
 desktop.ini
 Iconarchive-Mothers-Day-Gift.ico
 Icons-Land-3d-Food-Dish-Pasta-Spaghetti.ico
+backend/src/main/java/com/mystery/project/entities/organizations/usersorganization/MemberDto.java
+backend/src/main/java/com/mystery/project/entities/organizations/usersorganization/UsersOrganizationsController.java
