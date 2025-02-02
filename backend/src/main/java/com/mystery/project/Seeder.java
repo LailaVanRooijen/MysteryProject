@@ -2,8 +2,8 @@ package com.mystery.project;
 
 import com.mystery.project.authentication.AuthenticationService;
 import com.mystery.project.authentication.dtos.RegisterRequestDto;
-import com.mystery.project.entities.organizations.OrganizationService;
-import com.mystery.project.entities.organizations.dto.PostOrganization;
+import com.mystery.project.entities.organization.OrganizationService;
+import com.mystery.project.entities.organization.dto.PostOrganization;
 import com.mystery.project.entities.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

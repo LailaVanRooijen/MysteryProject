@@ -1,10 +1,10 @@
-package com.mystery.project.entities.organizations;
+package com.mystery.project.entities.organization;
 
-import com.mystery.project.entities.organizations.dto.GetOrganization;
-import com.mystery.project.entities.organizations.dto.PostOrganization;
-import com.mystery.project.entities.organizations.usersorganization.OrganizationRole;
-import com.mystery.project.entities.organizations.usersorganization.UsersOrganizations;
-import com.mystery.project.entities.organizations.usersorganization.UsersOrganizationsRepository;
+import com.mystery.project.entities.organization.dto.GetOrganization;
+import com.mystery.project.entities.organization.dto.PostOrganization;
+import com.mystery.project.entities.organization.userorganization.OrganizationRole;
+import com.mystery.project.entities.organization.userorganization.UserOrganization;
+import com.mystery.project.entities.organization.userorganization.UserOrganizationRepository;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrganizationService {
   private final OrganizationRepository organizationRepository;
-  private final UsersOrganizationsRepository usersOrganizationsRepository;
+  private final UserOrganizationRepository userOrganizationRepository;
   private final UserRepository userRepository;
 
   public GetOrganization create(PostOrganization postOrganization, User user) {
@@ -61,29 +61,29 @@ public class OrganizationService {
   /* Helper methods */
   @Transactional
   private void addUserToOrganization(User user, Organization organization, OrganizationRole role) {
-    UsersOrganizations joinTable = new UsersOrganizations(user, organization, role);
-    usersOrganizationsRepository.save(joinTable);
+    UserOrganization joinTable = new UserOrganization(user, organization, role);
+    userOrganizationRepository.save(joinTable);
   }
 
   private boolean isNotOwner(User user, Organization organization) {
-    UsersOrganizations membership =
-        usersOrganizationsRepository
+    UserOrganization membership =
+        userOrganizationRepository
             .findByUserAndOrganization(user, organization)
             .orElseThrow(
                 () -> new BadRequestException("User is not a member of this organization"));
     return membership.getOrganizationRole() != OrganizationRole.OWNER;
   }
 
-  private UsersOrganizations getMembership(User user, Organization organization) {
-    return usersOrganizationsRepository
+  private UserOrganization getMembership(User user, Organization organization) {
+    return userOrganizationRepository
         .findByUserAndOrganization(user, organization)
         .orElseThrow(
             () -> new BadRequestException("An organisation with this user does not exist"));
   }
 
   private boolean isMember(User user, Organization organization) {
-    UsersOrganizations membership =
-        usersOrganizationsRepository.findByUserAndOrganization(user, organization).orElse(null);
+    UserOrganization membership =
+        userOrganizationRepository.findByUserAndOrganization(user, organization).orElse(null);
     return membership != null;
   }
 

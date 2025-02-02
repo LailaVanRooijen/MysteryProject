@@ -1,7 +1,7 @@
-package com.mystery.project.entities.organizations;
+package com.mystery.project.entities.organization;
 
-import com.mystery.project.entities.organizations.dto.GetOrganization;
-import com.mystery.project.entities.organizations.dto.PostOrganization;
+import com.mystery.project.entities.organization.dto.GetOrganization;
+import com.mystery.project.entities.organization.dto.PostOrganization;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
@@ -32,7 +32,7 @@ public class OrganizationController {
     return ResponseEntity.created(location).body(savedOrganisation);
   }
 
-  @PostMapping("/{organizationId}/users/add/{studentId}")
+  @PostMapping("/{organizationId}/students/add/{studentId}")
   public ResponseEntity<Organization> addStudentToOrganization(
       @PathVariable Long organizationId,
       @PathVariable UUID studentId,
