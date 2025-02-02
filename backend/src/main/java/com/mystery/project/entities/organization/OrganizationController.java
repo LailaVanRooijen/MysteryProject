@@ -32,7 +32,7 @@ public class OrganizationController {
     return ResponseEntity.created(location).body(savedOrganisation);
   }
 
-  @PostMapping("/{organizationId}/students/add/{studentId}")
+  @PostMapping("/{organizationId}/users/add/{studentId}")
   public ResponseEntity<Organization> addStudentToOrganization(
       @PathVariable Long organizationId,
       @PathVariable UUID studentId,
