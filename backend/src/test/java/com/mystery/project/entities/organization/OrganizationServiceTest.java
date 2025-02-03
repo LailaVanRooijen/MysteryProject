@@ -16,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 
 class OrganizationServiceTest {
   // TODO morgen zoek deze uit :
-  // https://stackoverflow.com/questions/79278490/mockito-is-currently-self-attaching-to-enable-the-inline-mock-maker-this-will-n
   @InjectMocks private OrganizationService organizationService;
 
   @Mock private OrganizationRepository organizationRepository;
