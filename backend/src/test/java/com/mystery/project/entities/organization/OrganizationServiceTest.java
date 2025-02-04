@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 class OrganizationServiceTest {
-  // TODO morgen zoek deze uit :
   @InjectMocks private OrganizationService organizationService;
 
   @Mock private OrganizationRepository organizationRepository;
@@ -29,12 +28,9 @@ class OrganizationServiceTest {
 
   @Test
   public void should_successfully_save_organization() {
-    // given
     PostOrganization postOrganization = new PostOrganization("Test organization");
     User user = new User("human@gmail.com", "Password123!", "human", Role.USER);
-    // when
     GetOrganization responseOrganization = organizationService.create(postOrganization, user);
-    // then
     assertEquals(postOrganization.name(), responseOrganization.name());
   }
 }
