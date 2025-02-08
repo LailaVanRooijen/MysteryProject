@@ -32,10 +32,11 @@ public class OrganizationService {
     return GetOrganization.to(createdOrganization);
   }
 
-  public void deleteOrganization(Long id, User user) {
+  public void deleteOrganization(Long id, User loggedInUser) {
     Organization organization = getOrganization(id);
+    if (loggedInUser == null) throw new BadRequestException("User cannot be null");
 
-    if (isNotOwner(user, organization)) {
+    if (isNotOwner(loggedInUser, organization)) {
       throw new BadRequestException("You do not have permission to delete an organization");
     }
 
@@ -43,6 +44,7 @@ public class OrganizationService {
   }
 
   public void addStudentToOrganization(Long organizationId, User loggedInUser, UUID studentId) {
+    if (loggedInUser == null) throw new BadRequestException("User cannot be null");
     Organization organization = getOrganization(organizationId);
 
     if (isNotOwner(loggedInUser, organization) || !isMember(loggedInUser, organization)) {
