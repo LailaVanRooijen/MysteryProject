@@ -1,6 +1,7 @@
 package com.mystery.project.entities.organizations;
 
 import com.mystery.project.entities.organizations.dto.GetOrganization;
+import com.mystery.project.entities.organizations.Organization;
 import com.mystery.project.entities.organizations.dto.PostOrganization;
 import com.mystery.project.entities.organizations.usersorganization.OrganizationRole;
 import com.mystery.project.entities.organizations.usersorganization.UsersOrganisationsRepository;
@@ -10,15 +11,20 @@ import com.mystery.project.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class OrganizationService {
+
   private final OrganizationRepository organizationRepository;
   private final UsersOrganisationsRepository usersOrganisationsRepository;
 
   public GetOrganization create(PostOrganization postOrganization, User user) {
+
     if (postOrganization == null) throw new BadRequestException("Organisation cannot be null");
+
     if (user == null) throw new BadRequestException("User cannot be null");
 
     Organization createdOrganization = PostOrganization.from(postOrganization);
@@ -33,5 +39,40 @@ public class OrganizationService {
   private void addUserToOrganisation(User user, Organization organization, OrganizationRole role) {
     UsersOrganizations joinTable = new UsersOrganizations(user, organization, role);
     usersOrganisationsRepository.save(joinTable);
+  }
+
+  public GetOrganization getOrganizationById(Long organizationId,User user) {
+
+    if (user == null) throw new BadRequestException("User cannot be null");
+
+      if (organizationId == null || organizationId < 0) 
+          throw new BadRequestException("Organization id cannot be null or < 0");
+
+      Organization fetchedOrganization =
+          organizationRepository
+              .findById(organizationId)
+              .orElseThrow(
+                  () -> new BadRequestException("No organization is present with this id "));
+
+ 
+    return GetOrganization.to(fetchedOrganization);
+  }
+
+  public List<Organization> getAllOrganizations(User user){
+
+      if (user == null) throw new BadRequestException("User cannot be null");
+
+      List<Organization> fetchedOrganizations = organizationRepository.findAll();
+
+      if(fetchedOrganizations.isEmpty())throw new BadRequestException("No organizations are present");    
+
+
+      //----------NOT USING DTO BECCAUSE CODE IS NOT EASY TO UNDERSTAND---------
+      // List<GetOrganization> getOrganizations = new ArrayList<>();
+     
+      // for (Organization organization : fetchedOrganizations) {
+      //     getOrganizations.add(GetOrganization.to(organization));
+      // }
+      return fetchedOrganizations;
   }
 }

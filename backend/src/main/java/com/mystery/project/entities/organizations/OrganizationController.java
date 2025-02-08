@@ -5,6 +5,8 @@ import com.mystery.project.entities.organizations.dto.PostOrganization;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,13 +23,46 @@ public class OrganizationController {
   @PostMapping
   public ResponseEntity<GetOrganization> create(
       @RequestBody PostOrganization postOrganization, Authentication authentication) {
+
     User user = (User) authentication.getPrincipal();
+
     GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
+
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(savedOrganisation.id())
             .toUri();
+
     return ResponseEntity.created(location).body(savedOrganisation);
   }
+
+  @GetMapping(value = "/get/{id}")
+  public ResponseEntity<GetOrganization> getOrganizationDetails(
+      @PathVariable Long id,
+      @RequestBody GetOrganization organization,
+      Authentication authentication) {
+
+    GetOrganization fecthedOrganization = null;
+
+    User user = (User) authentication.getPrincipal();
+
+    fecthedOrganization = organizationService.getOrganizationById(id,user);
+
+    return ResponseEntity.ok(fecthedOrganization);
+  }
+
+  
+  @GetMapping(value = "/getAllOrganizations")
+  public ResponseEntity<List<Organization>> getAllOrganization(@RequestBody GetOrganization organization,Authentication authentication) {
+      
+        List<Organization> listOfAllOrganizations= null;
+    
+        User user = (User) authentication.getPrincipal();
+    
+        listOfAllOrganizations = organizationService.getAllOrganizations(user);
+
+    return ResponseEntity.ok(listOfAllOrganizations);
+  }
+
 }
