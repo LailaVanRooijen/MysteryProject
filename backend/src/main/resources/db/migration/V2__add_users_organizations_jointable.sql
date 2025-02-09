@@ -1,3 +1,6 @@
+CREATE SEQUENCE IF NOT EXISTS organizations_seq INCREMENT BY 50;
+CREATE SEQUENCE IF NOT EXISTS users_organizations_seq INCREMENT BY 50;
+
 CREATE TABLE IF NOT EXISTS public.users
 (
     id uuid NOT NULL,
