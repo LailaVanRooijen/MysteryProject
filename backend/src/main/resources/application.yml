@@ -3,12 +3,12 @@ spring:
     name: Mystery Project
   frontend-client: http://localhost:5173
   config:
-    import:
-      "env.properties"
+    import: "env.properties"
   datasource:
     url: jdbc:postgresql://localhost:${DB_PORT}/mystery
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+    name: ${DB_NAME}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

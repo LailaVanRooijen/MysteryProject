@@ -11,6 +11,8 @@ import com.mystery.project.exception.BadRequestException;
 import com.mystery.project.exception.EntityNotFoundException;
 import com.mystery.project.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
+
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,10 @@ public class OrganizationService {
     addUserToOrganization(user, createdOrganization, OrganizationRole.OWNER);
 
     return GetOrganization.to(createdOrganization);
+  }
+
+  public Optional<Organization> getById(Long id) {
+    return organizationRepository.findById(id);
   }
 
   public void deleteOrganization(Long id, User loggedInUser) {
