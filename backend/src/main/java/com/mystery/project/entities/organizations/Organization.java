@@ -1,5 +1,6 @@
 package com.mystery.project.entities.organizations;
 
+import com.mystery.project.entities.courses.Course;
 import com.mystery.project.entities.user.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class Organization {
   private String name;
 
   @OneToMany private final List<User> users = new ArrayList<>();
+
+  @OneToMany
+  @JoinColumn(name = "organization_id")
+  private List<Course> courses = new ArrayList<>();
 
   public Organization(String name) {
     this.name = name;

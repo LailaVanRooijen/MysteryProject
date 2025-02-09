@@ -8,6 +8,7 @@ import com.mystery.project.entities.organizations.usersorganization.UsersOrganiz
 import com.mystery.project.entities.user.User;
 import com.mystery.project.exception.BadRequestException;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,10 @@ public class OrganizationService {
     addUserToOrganisation(user, createdOrganization, OrganizationRole.OWNER);
 
     return GetOrganization.to(createdOrganization);
+  }
+
+  public Optional<Organization> getById(Long id) {
+    return organizationRepository.findById(id);
   }
 
   @Transactional
