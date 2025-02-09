@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<Map<String, String>> handleValidationExceptions(
+  public ResponseEntity<ProblemDetail> handleValidationExceptions(
       MethodArgumentNotValidException exception) {
     Map<String, String> errors = new HashMap<>();
     exception
@@ -21,7 +21,13 @@ public class GlobalExceptionHandler {
         .getFieldErrors()
         .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
 
-    return ResponseEntity.badRequest().body(errors);
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(
+            HttpStatus.BAD_REQUEST, "Request body does not meet requirements");
+
+    problemDetail.setProperty("errors", errors);
+
+    return ResponseEntity.badRequest().body(problemDetail);
   }
 
   @ExceptionHandler(BadRequestException.class)
