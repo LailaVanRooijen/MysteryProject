@@ -5,6 +5,8 @@ import com.mystery.project.entities.organizations.dto.PostOrganization;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,7 +22,7 @@ public class OrganizationController {
 
   @PostMapping
   public ResponseEntity<GetOrganization> create(
-      @RequestBody PostOrganization postOrganization, Authentication authentication) {
+      @RequestBody @Valid PostOrganization postOrganization, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
     GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
     URI location =
