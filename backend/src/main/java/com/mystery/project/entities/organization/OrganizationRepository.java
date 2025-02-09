@@ -1,4 +1,4 @@
-package com.mystery.project.entities.organizations;
+package com.mystery.project.entities.organization;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

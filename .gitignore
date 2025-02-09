@@ -78,6 +78,8 @@ db_username.txt
 Thumbs.db     # Windows
 backend/src/main/resources/env.properties
 backend/desktop.ini
+
+# folder icon files
 Babasse-Old-School-Fichiers-gif.ico
 desktop.ini
 Iconarchive-Mothers-Day-Gift.ico

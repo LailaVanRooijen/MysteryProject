@@ -1,6 +1,6 @@
-package com.mystery.project.entities.organizations.dto;
+package com.mystery.project.entities.organization.dto;
 
-import com.mystery.project.entities.organizations.Organization;
+import com.mystery.project.entities.organization.Organization;
 
 public record GetOrganization(Long id, String name) {
   public static GetOrganization to(Organization entity) {

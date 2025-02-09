@@ -1,8 +1,8 @@
 package com.mystery.project.entities.courses;
 
 import com.mystery.project.entities.courses.dto.PostCourse;
-import com.mystery.project.entities.organizations.Organization;
-import com.mystery.project.entities.organizations.OrganizationRepository;
+import com.mystery.project.entities.organization.Organization;
+import com.mystery.project.entities.organization.OrganizationRepository;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import java.util.List;

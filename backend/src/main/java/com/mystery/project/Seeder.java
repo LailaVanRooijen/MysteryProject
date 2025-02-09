@@ -4,10 +4,10 @@ import com.mystery.project.authentication.AuthenticationService;
 import com.mystery.project.authentication.dtos.RegisterRequestDto;
 import com.mystery.project.entities.courses.CourseService;
 import com.mystery.project.entities.courses.dto.PostCourse;
-import com.mystery.project.entities.organizations.Organization;
-import com.mystery.project.entities.organizations.OrganizationRepository;
-import com.mystery.project.entities.organizations.OrganizationService;
-import com.mystery.project.entities.organizations.dto.PostOrganization;
+import com.mystery.project.entities.organization.Organization;
+import com.mystery.project.entities.organization.OrganizationRepository;
+import com.mystery.project.entities.organization.OrganizationService;
+import com.mystery.project.entities.organization.dto.PostOrganization;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import java.util.List;
@@ -47,7 +47,7 @@ public class Seeder implements CommandLineRunner {
         userRepository.findByDisplayNameIgnoreCase("chad").orElseThrow());
 
     organizationService.create(
-        new PostOrganization("Chad Industries"),
+        new PostOrganization("Chadette Industries"),
         userRepository.findByDisplayNameIgnoreCase("chadette").orElseThrow());
   }
 

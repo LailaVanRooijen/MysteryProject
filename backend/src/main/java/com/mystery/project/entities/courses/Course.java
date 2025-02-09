@@ -1,6 +1,6 @@
 package com.mystery.project.entities.courses;
 
-import com.mystery.project.entities.organizations.Organization;
+import com.mystery.project.entities.organization.Organization;
 import com.mystery.project.entities.user.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;

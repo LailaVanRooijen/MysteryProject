@@ -10,7 +10,6 @@ import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
 import com.mystery.project.util.validation.UserValidator;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +53,6 @@ public class AuthenticationService {
 
     userRepository.save(
         new User(
-            UUID.randomUUID(),
             registerRequestDto.email(),
             passwordEncoder.encode(registerRequestDto.password()),
             registerRequestDto.displayName(),
