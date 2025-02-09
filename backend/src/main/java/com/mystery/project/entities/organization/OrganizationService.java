@@ -8,7 +8,11 @@ import com.mystery.project.entities.organization.userorganization.UserOrganizati
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
+import com.mystery.project.exception.EntityNotFoundException;
+import com.mystery.project.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
+
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +25,8 @@ public class OrganizationService {
   private final UserRepository userRepository;
 
   public GetOrganization create(PostOrganization postOrganization, User user) {
-    if (postOrganization == null) throw new BadRequestException("Organisation cannot be null");
-    if (user == null) throw new BadRequestException("User cannot be null");
+    if (postOrganization == null) throw new EntityNotFoundException("Organisation cannot be null");
+    if (user == null) throw new ForbiddenException();
 
     Organization createdOrganization = PostOrganization.from(postOrganization);
     organizationRepository.save(createdOrganization);
@@ -32,21 +36,27 @@ public class OrganizationService {
     return GetOrganization.to(createdOrganization);
   }
 
-  public void deleteOrganization(Long id, User user) {
-    Organization organization = getOrganization(id);
+  public Optional<Organization> getById(Long id) {
+    return organizationRepository.findById(id);
+  }
 
-    if (isNotOwner(user, organization)) {
-      throw new BadRequestException("You do not have permission to delete an organization");
+  public void deleteOrganization(Long id, User loggedInUser) {
+    Organization organization = getOrganization(id);
+    if (loggedInUser == null) throw new ForbiddenException();
+
+    if (isNotOwner(loggedInUser, organization)) {
+      throw new ForbiddenException("You do not have permission to delete an organization");
     }
 
     organizationRepository.deleteById(id);
   }
 
   public void addStudentToOrganization(Long organizationId, User loggedInUser, UUID studentId) {
+    if (loggedInUser == null) throw new BadRequestException("User cannot be null");
     Organization organization = getOrganization(organizationId);
 
     if (isNotOwner(loggedInUser, organization) || !isMember(loggedInUser, organization)) {
-      throw new BadRequestException(
+      throw new ForbiddenException(
           "You do not have permission to add students to this organization.");
     }
 
@@ -69,16 +79,14 @@ public class OrganizationService {
     UserOrganization membership =
         userOrganizationRepository
             .findByUserAndOrganization(user, organization)
-            .orElseThrow(
-                () -> new BadRequestException("User is not a member of this organization"));
+            .orElseThrow(() -> new ForbiddenException("Only the owner can perform this action"));
     return membership.getOrganizationRole() != OrganizationRole.OWNER;
   }
 
   private UserOrganization getMembership(User user, Organization organization) {
     return userOrganizationRepository
         .findByUserAndOrganization(user, organization)
-        .orElseThrow(
-            () -> new BadRequestException("An organisation with this user does not exist"));
+        .orElseThrow(() -> new BadRequestException("User is not a member of this organization"));
   }
 
   private boolean isMember(User user, Organization organization) {
@@ -90,12 +98,12 @@ public class OrganizationService {
   private Organization getOrganization(Long id) {
     return organizationRepository
         .findById(id)
-        .orElseThrow(() -> new BadRequestException("This organization does not exist"));
+        .orElseThrow(() -> new EntityNotFoundException("This organization does not exist"));
   }
 
   private User getUser(UUID id) {
     return userRepository
         .findById(id)
-        .orElseThrow(() -> new BadRequestException("User does not exist"));
+        .orElseThrow(() -> new EntityNotFoundException("User does not exist"));
   }
 }
