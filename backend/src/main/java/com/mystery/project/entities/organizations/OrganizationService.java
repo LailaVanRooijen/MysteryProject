@@ -8,6 +8,8 @@ import com.mystery.project.entities.organizations.usersorganization.UsersOrganis
 import com.mystery.project.entities.organizations.usersorganization.UsersOrganizations;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.exception.BadRequestException;
+import com.mystery.project.exception.NoContentException;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,34 +47,23 @@ public class OrganizationService {
 
     if (user == null) throw new BadRequestException("User cannot be null");
 
-      if (organizationId == null || organizationId < 0) 
-          throw new BadRequestException("Organization id cannot be null or < 0");
-
       Organization fetchedOrganization =
           organizationRepository
               .findById(organizationId)
               .orElseThrow(
-                  () -> new BadRequestException("No organization is present with this id "));
+                  () -> new NoContentException());
 
- 
     return GetOrganization.to(fetchedOrganization);
   }
 
-  public List<Organization> getAllOrganizations(User user){
+  public List<GetOrganization> getAllOrganizations(User user){
 
       if (user == null) throw new BadRequestException("User cannot be null");
 
       List<Organization> fetchedOrganizations = organizationRepository.findAll();
 
-      if(fetchedOrganizations.isEmpty())throw new BadRequestException("No organizations are present");    
+      if(fetchedOrganizations.isEmpty())throw new NoContentException();    
 
-
-      //----------NOT USING DTO BECCAUSE CODE IS NOT EASY TO UNDERSTAND---------
-      // List<GetOrganization> getOrganizations = new ArrayList<>();
-     
-      // for (Organization organization : fetchedOrganizations) {
-      //     getOrganizations.add(GetOrganization.to(organization));
-      // }
-      return fetchedOrganizations;
+      return fetchedOrganizations.stream().map(GetOrganization::to).toList();
   }
 }

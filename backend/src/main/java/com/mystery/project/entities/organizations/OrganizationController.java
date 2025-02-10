@@ -37,32 +37,21 @@ public class OrganizationController {
     return ResponseEntity.created(location).body(savedOrganisation);
   }
 
-  @GetMapping(value = "/get/{id}")
-  public ResponseEntity<GetOrganization> getOrganizationDetails(
-      @PathVariable Long id,
-      @RequestBody GetOrganization organization,
-      Authentication authentication) {
+  @GetMapping(value = "/{id}")
+  public ResponseEntity<GetOrganization> getOrganizationDetails(@PathVariable Long id,Authentication authentication) {
 
     GetOrganization fecthedOrganization = null;
-
     User user = (User) authentication.getPrincipal();
-
     fecthedOrganization = organizationService.getOrganizationById(id,user);
 
     return ResponseEntity.ok(fecthedOrganization);
   }
 
   
-  @GetMapping(value = "/getAllOrganizations")
-  public ResponseEntity<List<Organization>> getAllOrganization(@RequestBody GetOrganization organization,Authentication authentication) {
-      
-        List<Organization> listOfAllOrganizations= null;
-    
-        User user = (User) authentication.getPrincipal();
-    
-        listOfAllOrganizations = organizationService.getAllOrganizations(user);
-
-    return ResponseEntity.ok(listOfAllOrganizations);
+  @GetMapping
+  public ResponseEntity<List<GetOrganization>> getAllOrganization(Authentication authentication) {
+     User user = (User) authentication.getPrincipal();
+    return ResponseEntity.ok(organizationService.getAllOrganizations(user));
   }
 
 }
