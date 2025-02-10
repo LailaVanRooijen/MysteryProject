@@ -1,4 +1,4 @@
-package com.mystery.project.entities.organization.userorganization;
+package com.mystery.project.entities.organizationuser;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.mystery.project.entities.organization.Organization;
@@ -10,16 +10,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class UserOrganization {
+public class OrganizationUser {
   @Id @GeneratedValue private Long id;
 
   @ManyToOne private User user;
   @ManyToOne @JsonBackReference private Organization organization;
-  private OrganizationRole organizationRole;
+  private OrganizationUserRole organizationUserRole;
 
-  public UserOrganization(User user, Organization organization, OrganizationRole organizationRole) {
+  public OrganizationUser(
+      User user, Organization organization, OrganizationUserRole organizationUserRole) {
     this.user = user;
     this.organization = organization;
-    this.organizationRole = organizationRole;
+    this.organizationUserRole = organizationUserRole;
   }
 }

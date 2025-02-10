@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.mystery.project.entities.organization.dto.GetOrganization;
 import com.mystery.project.entities.organization.dto.PostOrganization;
-import com.mystery.project.entities.organization.userorganization.UserOrganizationRepository;
+import com.mystery.project.entities.organizationuser.OrganizationUserRepository;
 import com.mystery.project.entities.user.Role;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
@@ -18,7 +18,7 @@ class OrganizationServiceTest {
   @InjectMocks private OrganizationService organizationService;
 
   @Mock private OrganizationRepository organizationRepository;
-  @Mock private UserOrganizationRepository userOrganizationRepository;
+  @Mock private OrganizationUserRepository organizationUserRepository;
   @Mock private UserRepository userRepository;
 
   @BeforeEach
@@ -30,7 +30,8 @@ class OrganizationServiceTest {
   public void should_successfully_save_organization() {
     PostOrganization postOrganization = new PostOrganization("Test organization");
     User user = new User("human@gmail.com", "Password123!", "human", Role.USER);
-    GetOrganization responseOrganization = organizationService.create(postOrganization, user);
+    GetOrganization responseOrganization =
+        GetOrganization.to(organizationService.create(postOrganization, user));
     assertEquals(postOrganization.name(), responseOrganization.name());
   }
 }

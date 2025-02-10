@@ -17,6 +17,10 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ProblemDetail> entityNotFoundHandler(EntityNotFoundException exception) {
+    String message =
+        (exception.getMessage() != null && !exception.getMessage().isBlank())
+            ? exception.getMessage()
+            : "Not found";
     ProblemDetail problemDetail =
         ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
     return ResponseEntity.badRequest().body(problemDetail);
@@ -24,16 +28,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<ProblemDetail> forbiddenHandler(ForbiddenException exception) {
-    String message;
-    if (exception.getMessage() == null || exception.getMessage().isBlank()) {
-      message = "Forbidden";
-    } else {
-      message = exception.getMessage();
-    }
+    String message =
+        (exception.getMessage() != null && !exception.getMessage().isBlank())
+            ? exception.getMessage()
+            : "Forbidden";
 
-    ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
-    problemDetail.setTitle("Forbidden");
-    problemDetail.setDetail(message);
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, message);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
   }
 }

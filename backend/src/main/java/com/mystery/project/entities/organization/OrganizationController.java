@@ -23,7 +23,8 @@ public class OrganizationController {
   public ResponseEntity<GetOrganization> create(
       @RequestBody PostOrganization postOrganization, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
-    GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
+    GetOrganization savedOrganisation =
+        GetOrganization.to(organizationService.create(postOrganization, user));
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -33,7 +34,7 @@ public class OrganizationController {
   }
 
   @PostMapping("/{organizationId}/users/add/{studentId}")
-  public ResponseEntity<Organization> addStudentToOrganization(
+  public ResponseEntity<Void> addStudentToOrganization(
       @PathVariable Long organizationId,
       @PathVariable UUID studentId,
       Authentication authentication) {
@@ -42,8 +43,18 @@ public class OrganizationController {
     return ResponseEntity.ok().build();
   }
 
+  @DeleteMapping("/{organizationId}/users/remove/{studentId}")
+  public ResponseEntity<Void> removeStudentFromOrganization(
+      @PathVariable Long organizationId,
+      @PathVariable UUID studentId,
+      Authentication authentication) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    organizationService.removeStudentFromOrganization(organizationId, loggedInUser, studentId);
+    return ResponseEntity.ok().build();
+  }
+
   @DeleteMapping("/{id}")
-  public ResponseEntity<Organization> delete(@PathVariable Long id, Authentication authentication) {
+  public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
     organizationService.deleteOrganization(id, user);
     return ResponseEntity.ok().build();

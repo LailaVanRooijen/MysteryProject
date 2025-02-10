@@ -3,7 +3,7 @@ package com.mystery.project.util.validation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidator {
+public class UserCredentialsValidator {
   private static final String EMAIL_REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
   private static final Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
   private static final String PASSWORD_REGEX =

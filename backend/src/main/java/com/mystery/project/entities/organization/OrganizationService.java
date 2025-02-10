@@ -1,18 +1,15 @@
 package com.mystery.project.entities.organization;
 
-import com.mystery.project.entities.organization.dto.GetOrganization;
 import com.mystery.project.entities.organization.dto.PostOrganization;
-import com.mystery.project.entities.organization.userorganization.OrganizationRole;
-import com.mystery.project.entities.organization.userorganization.UserOrganization;
-import com.mystery.project.entities.organization.userorganization.UserOrganizationRepository;
+import com.mystery.project.entities.organizationuser.OrganizationUser;
+import com.mystery.project.entities.organizationuser.OrganizationUserRepository;
+import com.mystery.project.entities.organizationuser.OrganizationUserRole;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
 import com.mystery.project.exception.EntityNotFoundException;
 import com.mystery.project.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
-
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,28 +18,23 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OrganizationService {
   private final OrganizationRepository organizationRepository;
-  private final UserOrganizationRepository userOrganizationRepository;
+  private final OrganizationUserRepository organizationUserRepository;
   private final UserRepository userRepository;
 
-  public GetOrganization create(PostOrganization postOrganization, User user) {
-    if (postOrganization == null) throw new EntityNotFoundException("Organisation cannot be null");
-    if (user == null) throw new ForbiddenException();
+  @Transactional
+  public Organization create(PostOrganization postOrganization, User user) {
+    if (postOrganization == null) throw new BadRequestException("Request body is missing");
 
     Organization createdOrganization = PostOrganization.from(postOrganization);
     organizationRepository.save(createdOrganization);
 
-    addUserToOrganization(user, createdOrganization, OrganizationRole.OWNER);
+    addUserToOrganization(user, createdOrganization, OrganizationUserRole.OWNER);
 
-    return GetOrganization.to(createdOrganization);
-  }
-
-  public Optional<Organization> getById(Long id) {
-    return organizationRepository.findById(id);
+    return createdOrganization;
   }
 
   public void deleteOrganization(Long id, User loggedInUser) {
-    Organization organization = getOrganization(id);
-    if (loggedInUser == null) throw new ForbiddenException();
+    Organization organization = getOrganizationById(id);
 
     if (isNotOwner(loggedInUser, organization)) {
       throw new ForbiddenException("You do not have permission to delete an organization");
@@ -52,56 +44,90 @@ public class OrganizationService {
   }
 
   public void addStudentToOrganization(Long organizationId, User loggedInUser, UUID studentId) {
-    if (loggedInUser == null) throw new BadRequestException("User cannot be null");
-    Organization organization = getOrganization(organizationId);
+    Organization organization = getOrganizationById(organizationId);
+    User student = getUserById(studentId);
 
     if (isNotOwner(loggedInUser, organization) || !isMember(loggedInUser, organization)) {
       throw new ForbiddenException(
           "You do not have permission to add students to this organization.");
     }
 
-    User student = getUser(studentId);
     if (isMember(student, organization)) {
       throw new BadRequestException("Student is already a member");
     }
 
-    addUserToOrganization(student, organization, OrganizationRole.STUDENT);
+    addUserToOrganization(student, organization, OrganizationUserRole.STUDENT);
+  }
+
+  public void removeStudentFromOrganization(
+      Long organizationId, User loggedInUser, UUID studentId) {
+    Organization organization = getOrganizationById(organizationId);
+    User student = getUserById(studentId);
+
+    if (isNotOwner(loggedInUser, organization)) {
+      throw new ForbiddenException("Only the owner can perform this action");
+    }
+    if (isOwner(student, organization)) {
+      throw new ForbiddenException("The owner may not be removed from the organization");
+    }
+    if (!isMember(student, organization)) {
+      throw new BadRequestException("This student is not a member of this organization");
+    }
+
+    removeUserFromOrganization(student, organization);
   }
 
   /* Helper methods */
   @Transactional
-  private void addUserToOrganization(User user, Organization organization, OrganizationRole role) {
-    UserOrganization joinTable = new UserOrganization(user, organization, role);
-    userOrganizationRepository.save(joinTable);
+  private void addUserToOrganization(
+      User user, Organization organization, OrganizationUserRole role) {
+    OrganizationUser membership = new OrganizationUser(user, organization, role);
+    organizationUserRepository.save(membership);
+  }
+
+  @Transactional
+  private void removeUserFromOrganization(User student, Organization organization) {
+    OrganizationUser membership =
+        organizationUserRepository
+            .findByUserAndOrganization(student, organization)
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "User is not part of this organization, or organization does not exist"));
+    organizationUserRepository.deleteById(membership.getId());
+  }
+
+  private boolean isOwner(User user, Organization organization) {
+    OrganizationUser membership = findMembership(user, organization);
+    return membership.getOrganizationUserRole() == OrganizationUserRole.OWNER;
   }
 
   private boolean isNotOwner(User user, Organization organization) {
-    UserOrganization membership =
-        userOrganizationRepository
-            .findByUserAndOrganization(user, organization)
-            .orElseThrow(() -> new ForbiddenException("Only the owner can perform this action"));
-    return membership.getOrganizationRole() != OrganizationRole.OWNER;
+    return !isOwner(user, organization);
   }
 
-  private UserOrganization getMembership(User user, Organization organization) {
-    return userOrganizationRepository
+  private OrganizationUser findMembership(User user, Organization organization) {
+    return organizationUserRepository
         .findByUserAndOrganization(user, organization)
-        .orElseThrow(() -> new BadRequestException("User is not a member of this organization"));
+        .orElseThrow(
+            () ->
+                new BadRequestException(
+                    "Can not find membership, either user is not a member or organization does not exist"));
   }
 
   private boolean isMember(User user, Organization organization) {
-    UserOrganization membership =
-        userOrganizationRepository.findByUserAndOrganization(user, organization).orElse(null);
+    OrganizationUser membership =
+        organizationUserRepository.findByUserAndOrganization(user, organization).orElse(null);
     return membership != null;
   }
 
-  private Organization getOrganization(Long id) {
+  private Organization getOrganizationById(Long id) {
     return organizationRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("This organization does not exist"));
   }
 
-  private User getUser(UUID id) {
+  private User getUserById(UUID id) {
     return userRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("User does not exist"));
