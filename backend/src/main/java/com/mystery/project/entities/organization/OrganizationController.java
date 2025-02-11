@@ -4,6 +4,7 @@ import com.mystery.project.entities.organization.dto.GetOrganization;
 import com.mystery.project.entities.organization.dto.PostOrganization;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
@@ -22,8 +23,7 @@ public class OrganizationController {
 
   @PostMapping
   public ResponseEntity<GetOrganization> create(
-      @RequestBody PostOrganization postOrganization, Authentication authentication) {
-
+      @RequestBody @Valid PostOrganization postOrganization, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
 
     GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
@@ -37,20 +37,20 @@ public class OrganizationController {
     return ResponseEntity.created(location).body(savedOrganisation);
   }
 
-  @GetMapping(value = "/{id}")
-  public ResponseEntity<GetOrganization> getOrganizationDetails(@PathVariable Long id,Authentication authentication) {
+  @GetMapping("/{id}")
+  public ResponseEntity<GetOrganization> getOrganizationDetails(
+      @PathVariable Long id, Authentication authentication) {
 
     GetOrganization fecthedOrganization = null;
     User user = (User) authentication.getPrincipal();
-    fecthedOrganization = organizationService.getOrganizationById(id,user);
+    fecthedOrganization = organizationService.getOrganizationById(id, user);
 
     return ResponseEntity.ok(fecthedOrganization);
   }
 
-  
   @GetMapping
   public ResponseEntity<List<GetOrganization>> getAllOrganization(Authentication authentication) {
-     User user = (User) authentication.getPrincipal();
+    User user = (User) authentication.getPrincipal();
     return ResponseEntity.ok(organizationService.getAllOrganizations(user));
   }
 
