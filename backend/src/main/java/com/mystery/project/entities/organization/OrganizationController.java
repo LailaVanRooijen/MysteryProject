@@ -6,9 +6,10 @@ import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,8 @@ public class OrganizationController {
   public ResponseEntity<GetOrganization> create(
       @RequestBody @Valid PostOrganization postOrganization, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
-
-    GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
-
+    GetOrganization savedOrganisation =
+        GetOrganization.to(organizationService.create(postOrganization, user));
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
@@ -38,24 +38,22 @@ public class OrganizationController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<GetOrganization> getOrganizationDetails(
+  public ResponseEntity<Organization> getById(
       @PathVariable Long id, Authentication authentication) {
 
-    GetOrganization fecthedOrganization = null;
     User user = (User) authentication.getPrincipal();
-    fecthedOrganization = organizationService.getOrganizationById(id, user);
+    Organization organization = organizationService.getById(id, user);
 
-    return ResponseEntity.ok(fecthedOrganization);
+    return ResponseEntity.ok(organization);
   }
 
   @GetMapping
-  public ResponseEntity<List<GetOrganization>> getAllOrganization(Authentication authentication) {
-    User user = (User) authentication.getPrincipal();
-    return ResponseEntity.ok(organizationService.getAllOrganizations(user));
+  public Page<GetOrganization> getAll(Pageable pageable) {
+    return organizationService.getAll(pageable).map(GetOrganization::to);
   }
 
   @PostMapping("/{organizationId}/users/add/{studentId}")
-  public ResponseEntity<Organization> addStudentToOrganization(
+  public ResponseEntity<Void> addStudentToOrganization(
       @PathVariable Long organizationId,
       @PathVariable UUID studentId,
       Authentication authentication) {
@@ -64,8 +62,18 @@ public class OrganizationController {
     return ResponseEntity.ok().build();
   }
 
+  @DeleteMapping("/{organizationId}/users/remove/{studentId}")
+  public ResponseEntity<Void> removeStudentFromOrganization(
+      @PathVariable Long organizationId,
+      @PathVariable UUID studentId,
+      Authentication authentication) {
+    User loggedInUser = (User) authentication.getPrincipal();
+    organizationService.removeStudentFromOrganization(organizationId, loggedInUser, studentId);
+    return ResponseEntity.ok().build();
+  }
+
   @DeleteMapping("/{id}")
-  public ResponseEntity<Organization> delete(@PathVariable Long id, Authentication authentication) {
+  public ResponseEntity<Void> delete(@PathVariable Long id, Authentication authentication) {
     User user = (User) authentication.getPrincipal();
     organizationService.deleteOrganization(id, user);
     return ResponseEntity.ok().build();
