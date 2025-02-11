@@ -45,4 +45,25 @@ public class GlobalExceptionHandler {
             HttpStatus.BAD_REQUEST, "Request body is missing or incorrectly formatted");
     return ResponseEntity.badRequest().body(problemDetail);
   }
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<ProblemDetail> entityNotFoundHandler(EntityNotFoundException exception) {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+    return ResponseEntity.badRequest().body(problemDetail);
+  }
+
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<ProblemDetail> forbiddenHandler(ForbiddenException exception) {
+    String message;
+    if (exception.getMessage() == null || exception.getMessage().isBlank()) {
+      message = "Forbidden";
+    } else {
+      message = exception.getMessage();
+    }
+
+    ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
+    problemDetail.setTitle("Forbidden");
+    problemDetail.setDetail(message);
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+  }
 }
