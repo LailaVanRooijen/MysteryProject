@@ -19,14 +19,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequiredArgsConstructor
 public class CourseController {
   public final CourseService courseService;
-  public final OrganizationService organizationService;
 
   @GetMapping
   public ResponseEntity<List<GetCourse>> getOrganizationCourses(
       @PathVariable Long organizationId, Authentication authentication) {
 
     List<Course> courses = courseService.getByOrganization(organizationId);
-    List<GetCourse> dtoCourses = courses.stream().map(course -> new GetCourse(course)).toList();
+    List<GetCourse> dtoCourses = courses.stream().map(GetCourse::new).toList();
 
     return ResponseEntity.ok(dtoCourses);
   }
@@ -38,7 +37,9 @@ public class CourseController {
       @RequestBody PostCourse postCourse) {
     User loggedInUser = (User) authentication.getPrincipal();
 
-    Course course = courseService.create(postCourse, organizationId, loggedInUser.getId());
+    User teacher = (User) authentication.getPrincipal();
+
+    Course course = courseService.create(postCourse, organizationId, teacher.getId());
     GetCourse courseDto = new GetCourse(course);
 
     URI location =

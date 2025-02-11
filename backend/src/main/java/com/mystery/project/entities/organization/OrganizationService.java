@@ -9,6 +9,7 @@ import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
 import com.mystery.project.exception.EntityNotFoundException;
 import com.mystery.project.exception.ForbiddenException;
+import com.mystery.project.exception.NoContentException;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,27 @@ public class OrganizationService {
     }
 
     removeUserFromOrganization(student, organization);
+  }
+
+  public GetOrganization getOrganizationById(Long organizationId, User user) {
+
+    if (user == null) throw new BadRequestException("User cannot be null");
+
+    Organization fetchedOrganization =
+        organizationRepository.findById(organizationId).orElseThrow(NoContentException::new);
+
+    return GetOrganization.to(fetchedOrganization);
+  }
+
+  public List<GetOrganization> getAllOrganizations(User user) {
+
+    if (user == null) throw new BadRequestException("User cannot be null");
+
+    List<Organization> fetchedOrganizations = organizationRepository.findAll();
+
+    if (fetchedOrganizations.isEmpty()) throw new NoContentException();
+
+    return fetchedOrganizations.stream().map(GetOrganization::to).toList();
   }
 
   /* Helper methods */
