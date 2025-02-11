@@ -13,6 +13,8 @@ import com.mystery.project.exception.NoContentException;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +26,6 @@ public class OrganizationService {
 
   @Transactional
   public Organization create(PostOrganization postOrganization, User user) {
-    if (postOrganization == null) throw new BadRequestException("Request body is missing");
-
     Organization createdOrganization = PostOrganization.from(postOrganization);
     organizationRepository.save(createdOrganization);
 
@@ -35,9 +35,9 @@ public class OrganizationService {
   }
 
   public void deleteOrganization(Long id, User loggedInUser) {
-    Organization organization = getOrganizationById(id);
+    Organization organization = getOrganization(id);
 
-    if (isNotOwner(loggedInUser, organization)) {
+    if (!isOwner(loggedInUser, organization)) {
       throw new ForbiddenException("You do not have permission to delete an organization");
     }
 
@@ -45,10 +45,10 @@ public class OrganizationService {
   }
 
   public void addStudentToOrganization(Long organizationId, User loggedInUser, UUID studentId) {
-    Organization organization = getOrganizationById(organizationId);
-    User student = getUserById(studentId);
+    Organization organization = getOrganization(organizationId);
+    User student = getUser(studentId);
 
-    if (isNotOwner(loggedInUser, organization) || !isMember(loggedInUser, organization)) {
+    if (!isOwner(loggedInUser, organization) || !isMember(loggedInUser, organization)) {
       throw new ForbiddenException(
           "You do not have permission to add students to this organization.");
     }
@@ -62,10 +62,10 @@ public class OrganizationService {
 
   public void removeStudentFromOrganization(
       Long organizationId, User loggedInUser, UUID studentId) {
-    Organization organization = getOrganizationById(organizationId);
-    User student = getUserById(studentId);
+    Organization organization = getOrganization(organizationId);
+    User student = getUser(studentId);
 
-    if (isNotOwner(loggedInUser, organization)) {
+    if (!isOwner(loggedInUser, organization)) {
       throw new ForbiddenException("Only the owner can perform this action");
     }
     if (isOwner(student, organization)) {
@@ -78,25 +78,13 @@ public class OrganizationService {
     removeUserFromOrganization(student, organization);
   }
 
-  public GetOrganization getOrganizationById(Long organizationId, User user) {
-
+  public Organization getById(Long organizationId, User user) {
     if (user == null) throw new BadRequestException("User cannot be null");
-
-    Organization fetchedOrganization =
-        organizationRepository.findById(organizationId).orElseThrow(NoContentException::new);
-
-    return GetOrganization.to(fetchedOrganization);
+    return organizationRepository.findById(organizationId).orElseThrow(NoContentException::new);
   }
 
-  public List<GetOrganization> getAllOrganizations(User user) {
-
-    if (user == null) throw new BadRequestException("User cannot be null");
-
-    List<Organization> fetchedOrganizations = organizationRepository.findAll();
-
-    if (fetchedOrganizations.isEmpty()) throw new NoContentException();
-
-    return fetchedOrganizations.stream().map(GetOrganization::to).toList();
+  public Page<Organization> getAll(Pageable pageable) {
+    return organizationRepository.findAll(pageable);
   }
 
   /* Helper methods */
@@ -124,10 +112,6 @@ public class OrganizationService {
     return membership.getOrganizationUserRole() == OrganizationUserRole.OWNER;
   }
 
-  private boolean isNotOwner(User user, Organization organization) {
-    return !isOwner(user, organization);
-  }
-
   private OrganizationUser findMembership(User user, Organization organization) {
     return organizationUserRepository
         .findByUserAndOrganization(user, organization)
@@ -143,13 +127,13 @@ public class OrganizationService {
     return membership != null;
   }
 
-  private Organization getOrganizationById(Long id) {
+  private Organization getOrganization(Long id) {
     return organizationRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("This organization does not exist"));
   }
 
-  private User getUserById(UUID id) {
+  private User getUser(UUID id) {
     return userRepository
         .findById(id)
         .orElseThrow(() -> new EntityNotFoundException("User does not exist"));

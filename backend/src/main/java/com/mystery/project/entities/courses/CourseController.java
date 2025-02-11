@@ -2,7 +2,6 @@ package com.mystery.project.entities.courses;
 
 import com.mystery.project.entities.courses.dto.GetCourse;
 import com.mystery.project.entities.courses.dto.PostCourse;
-import com.mystery.project.entities.organization.OrganizationService;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
@@ -35,7 +34,6 @@ public class CourseController {
       Authentication authentication,
       @PathVariable Long organizationId,
       @RequestBody PostCourse postCourse) {
-    User loggedInUser = (User) authentication.getPrincipal();
 
     User teacher = (User) authentication.getPrincipal();
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ProblemDetail> handleValidationExceptions(
+  public ResponseEntity<ProblemDetail> ValidationExceptionsHandler(
       MethodArgumentNotValidException exception) {
     Map<String, String> errors = new HashMap<>();
     exception
@@ -38,13 +38,14 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ProblemDetail> handleHttpMessageNotReadableException(
+  public ResponseEntity<ProblemDetail> httpMessageNotReadableExceptionHandler(
       HttpMessageNotReadableException exception) {
     ProblemDetail problemDetail =
         ProblemDetail.forStatusAndDetail(
             HttpStatus.BAD_REQUEST, "Request body is missing or incorrectly formatted");
     return ResponseEntity.badRequest().body(problemDetail);
   }
+
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ProblemDetail> entityNotFoundHandler(EntityNotFoundException exception) {
     String message =
