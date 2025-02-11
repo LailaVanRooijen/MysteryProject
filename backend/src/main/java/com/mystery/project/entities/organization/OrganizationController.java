@@ -6,7 +6,6 @@ import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
 import java.util.List;
-
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
