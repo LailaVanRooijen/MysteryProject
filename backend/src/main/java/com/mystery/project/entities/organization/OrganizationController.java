@@ -7,6 +7,7 @@ import com.mystery.project.mainconfiguration.Routes;
 import java.net.URI;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,36 @@ public class OrganizationController {
   @PostMapping
   public ResponseEntity<GetOrganization> create(
       @RequestBody @Valid PostOrganization postOrganization, Authentication authentication) {
+      @RequestBody PostOrganization postOrganization, Authentication authentication) {
+
     User user = (User) authentication.getPrincipal();
+
     GetOrganization savedOrganisation = organizationService.create(postOrganization, user);
+
     URI location =
         ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
             .buildAndExpand(savedOrganisation.id())
             .toUri();
+
     return ResponseEntity.created(location).body(savedOrganisation);
+  }
+
+  @GetMapping(value = "/{id}")
+  public ResponseEntity<GetOrganization> getOrganizationDetails(@PathVariable Long id,Authentication authentication) {
+
+    GetOrganization fecthedOrganization = null;
+    User user = (User) authentication.getPrincipal();
+    fecthedOrganization = organizationService.getOrganizationById(id,user);
+
+    return ResponseEntity.ok(fecthedOrganization);
+  }
+
+  
+  @GetMapping
+  public ResponseEntity<List<GetOrganization>> getAllOrganization(Authentication authentication) {
+     User user = (User) authentication.getPrincipal();
+    return ResponseEntity.ok(organizationService.getAllOrganizations(user));
   }
 
   @PostMapping("/{organizationId}/users/add/{studentId}")
