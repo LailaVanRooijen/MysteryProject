@@ -9,8 +9,7 @@ import com.mystery.project.entities.user.Role;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
 import com.mystery.project.exception.BadRequestException;
-import com.mystery.project.util.validation.UserValidator;
-import java.util.UUID;
+import com.mystery.project.util.validation.UserCredentialsValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,16 +27,16 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public Authentication registerUser(RegisterRequestDto registerRequestDto) {
-    if (!UserValidator.isValidEmailPattern(registerRequestDto.email())) {
+    if (!UserCredentialsValidator.isValidEmailPattern(registerRequestDto.email())) {
       throw new BadRequestException("Not a valid email address.");
     }
 
-    if (!UserValidator.isValidPasswordPattern(registerRequestDto.password())) {
+    if (!UserCredentialsValidator.isValidPasswordPattern(registerRequestDto.password())) {
       throw new BadRequestException(
           "Password must be at least 8 characters long, contain at least one letter, one number, and one special character.");
     }
 
-    if (!UserValidator.isValidDisplayName(registerRequestDto.displayName())) {
+    if (!UserCredentialsValidator.isValidDisplayName(registerRequestDto.displayName())) {
       throw new BadRequestException("Display name should have at least 3 characters");
     }
 
@@ -54,7 +53,6 @@ public class AuthenticationService {
 
     userRepository.save(
         new User(
-            UUID.randomUUID(),
             registerRequestDto.email(),
             passwordEncoder.encode(registerRequestDto.password()),
             registerRequestDto.displayName(),
