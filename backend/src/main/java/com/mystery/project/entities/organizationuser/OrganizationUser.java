@@ -11,10 +11,20 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class OrganizationUser {
-  @Id @GeneratedValue private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @ManyToOne private User user;
-  @ManyToOne @JsonBackReference private Organization organization;
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
+  @ManyToOne
+  @JoinColumn(name = "organization_id", nullable = false)
+  @JsonBackReference
+  private Organization organization;
+
+  @Enumerated(EnumType.STRING)
   private OrganizationUserRole organizationUserRole;
 
   public OrganizationUser(
