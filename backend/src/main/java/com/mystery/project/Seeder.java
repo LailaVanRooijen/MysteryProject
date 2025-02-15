@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,6 +24,7 @@ public class Seeder implements CommandLineRunner {
   private final OrganizationRepository organizationRepository;
   private final OrganizationUserRepository organizationUserRepository;
   private final CourseRepository courseRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public void run(String... args) throws Exception {
@@ -84,10 +86,10 @@ public class Seeder implements CommandLineRunner {
   private void seedUsers() {
     if (!userRepository.findAll().isEmpty()) return;
 
-    User admin = new User("admin@gmail.com", "Password123!", "Admin", Role.ADMIN);
-    User regularUser1 = new User("JaneElliot@gmail.com", "Password123!", "JaneElliot", Role.USER);
+    User admin = new User("admin@gmail.com", passwordEncoder.encode("Password123!"), "Admin", Role.ADMIN);
+    User regularUser1 = new User("JaneElliot@gmail.com", passwordEncoder.encode("Password123!"), "JaneElliot", Role.USER);
     User regularUser2 =
-        new User("MartinFowler@gmail.com", "Password123!", "MartinFowler", Role.USER);
+        new User("MartinFowler@gmail.com", passwordEncoder.encode("Password123!"), "MartinFowler", Role.USER);
     userRepository.saveAll(List.of(admin, regularUser1, regularUser2));
   }
 }
