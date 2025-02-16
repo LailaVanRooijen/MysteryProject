@@ -5,15 +5,18 @@ import "@app/index.css";
 
 import About from "@app/pages/About";
 import Home from "@app/pages/Home";
+import AppStoreProvider from "@app/providers/AppStore.provider";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" index element={<Home />} />
-        <Route path="/about" index element={<About />} />
-      </Routes>
-    </BrowserRouter>
+    <AppStoreProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" index element={<Home />} />
+          <Route path="/about" index element={<About />} />
+        </Routes>
+      </BrowserRouter>
+    </AppStoreProvider>
   );
 }
 
