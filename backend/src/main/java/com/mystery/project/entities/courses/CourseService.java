@@ -8,6 +8,7 @@ import com.mystery.project.entities.user.UserRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,8 +18,8 @@ public class CourseService {
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
 
-  public List<Course> getByOrganization(Long organizationId) {
-    return courseRepository.findByOrganizationId(organizationId);
+  public List<Course> getByOrganization(Long organizationId, Pageable pageable) {
+    return courseRepository.findByOrganizationId(organizationId, pageable);
   }
 
   public Course create(PostCourse dto, Long organizationId, UUID teacherId) {
