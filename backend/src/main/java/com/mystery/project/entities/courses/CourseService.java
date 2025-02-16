@@ -17,7 +17,7 @@ public class CourseService {
   private final OrganizationRepository organizationRepository;
   private final UserRepository userRepository;
 
-  public List<Course> getByOrganization(Long organizationId) {
+  public List<Course> getOrganizationCourses(Long organizationId) {
     return courseRepository.findByOrganizationId(organizationId);
   }
 
@@ -38,5 +38,9 @@ public class CourseService {
     course.setTeacher(teacher);
 
     return courseRepository.save(course);
+  }
+
+  public Course getOrganizationCourse(Long organizationId, Long courseId) {
+    return courseRepository.findCourseByIdAndOrganizationId(courseId, organizationId);
   }
 }
