@@ -1,17 +1,17 @@
 package com.mystery.project;
 
-import com.mystery.project.authentication.AuthenticationService;
-import com.mystery.project.authentication.dtos.RegisterRequestDto;
-import com.mystery.project.entities.courses.CourseService;
-import com.mystery.project.entities.courses.dto.PostCourse;
+import com.mystery.project.entities.courses.Course;
+import com.mystery.project.entities.courses.CourseRepository;
 import com.mystery.project.entities.organization.Organization;
 import com.mystery.project.entities.organization.OrganizationRepository;
-import com.mystery.project.entities.organization.OrganizationService;
-import com.mystery.project.entities.organization.dto.PostOrganization;
+import com.mystery.project.entities.organizationuser.OrganizationUser;
+import com.mystery.project.entities.organizationuser.OrganizationUserRepository;
+import com.mystery.project.entities.organizationuser.OrganizationUserRole;
+import com.mystery.project.entities.user.Role;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.entities.user.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,53 +19,75 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class Seeder implements CommandLineRunner {
-  private final AuthenticationService authenticationService;
   private final UserRepository userRepository;
-  private final OrganizationService organizationService;
-  private final CourseService courseService;
   private final OrganizationRepository organizationRepository;
+  private final OrganizationUserRepository organizationUserRepository;
+  private final CourseRepository courseRepository;
 
   @Override
   public void run(String... args) throws Exception {
     seedUsers();
     seedOrganizations();
+    seedUserOrganizations();
     seedCourses();
   }
 
-  private void seedUsers() {
-    authenticationService.registerUser(
-        new RegisterRequestDto("test@gmail.com", "Password123!", "test"));
-    authenticationService.registerUser(
-        new RegisterRequestDto("chad@gmail.com", "Password123!", "chad"));
-    authenticationService.registerUser(
-        new RegisterRequestDto("chadette@gmail.com", "Password123!", "chadette"));
+  private void seedCourses() {
+    if (!courseRepository.findAll().isEmpty()) return;
+
+    List<User> users = userRepository.findAll();
+    if (users.isEmpty() || users.size() < 2) return;
+    List<Organization> organizations = organizationRepository.findAll();
+    if (organizations.isEmpty() || organizations.size() < 2) return;
+
+    Course courseJava =
+        new Course(
+            "Java course",
+            "Everything you need to know about Java.",
+            organizations.get(0),
+            users.get(0));
+    Course courseTypescript =
+        new Course(
+            "Typescript: Zero to Hero",
+            "Everything you need to know about Typescript.",
+            organizations.get(1),
+            users.get(1));
+
+    courseRepository.saveAll(List.of(courseJava, courseTypescript));
+  }
+
+  @Transactional
+  private void seedUserOrganizations() {
+    if (!organizationUserRepository.findAll().isEmpty()) return;
+
+    List<User> users = userRepository.findAll();
+    if (users.isEmpty() || users.size() < 2) return;
+    List<Organization> organizations = organizationRepository.findAll();
+    if (organizations.isEmpty() || organizations.size() < 2) return;
+
+    OrganizationUser membership1 =
+        new OrganizationUser(users.get(0), organizations.get(0), OrganizationUserRole.OWNER);
+    OrganizationUser membership2 =
+        new OrganizationUser(users.get(1), organizations.get(1), OrganizationUserRole.OWNER);
+
+    organizationUserRepository.saveAll(List.of(membership1, membership2));
   }
 
   private void seedOrganizations() {
-    organizationService.create(
-        new PostOrganization("Chad Industries"),
-        userRepository.findByDisplayNameIgnoreCase("chad").orElseThrow());
+    if (!organizationRepository.findAll().isEmpty()) return;
 
-    organizationService.create(
-        new PostOrganization("Chadette Industries"),
-        userRepository.findByDisplayNameIgnoreCase("chadette").orElseThrow());
+    Organization medeyu = new Organization("Medeyu");
+    Organization shareskill = new Organization("ShareSkill");
+    organizationRepository.saveAll(List.of(medeyu, shareskill));
   }
 
-  private void seedCourses() {
-    List<User> users = userRepository.findAll();
-    List<Organization> organizations = organizationRepository.findAll();
+  private void seedUsers() {
+    if (!userRepository.findAll().isEmpty()) return;
 
-    UUID teacherId = users.get(0).getId();
-    Long organizationId = organizations.get(0).getId();
-
-    courseService.create(
-        new PostCourse("Java Course", "Everything you need to know about Java."),
-        organizationId,
-        teacherId);
-
-    courseService.create(
-        new PostCourse("Typescript: Zero to Hero", "Everything you need to know about TypeScript."),
-        organizationId,
-        teacherId);
+    User admin = new User("admin@gmail.com", "Password123!", "Admin", Role.ADMIN);
+    User regularUser1 = new User("JaneElliot@gmail.com", "Password123!", "JaneElliot", Role.USER);
+    User regularUser2 =
+        new User("MartinFowler@gmail.com", "Password123!", "MartinFowler", Role.USER);
+    userRepository.saveAll(List.of(admin, regularUser1, regularUser2));
   }
 }

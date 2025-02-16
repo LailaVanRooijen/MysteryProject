@@ -8,6 +8,7 @@ public record GetOrganization(Long id, String name) {
     if (entity == null) {
       throw new BadRequestException("Organization is null");
     }
+
     return new GetOrganization(entity.getId(), entity.getName());
   }
 }
