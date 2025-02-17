@@ -4,10 +4,12 @@ import com.mystery.project.entities.courses.dto.GetCourse;
 import com.mystery.project.entities.courses.dto.PostCourse;
 import com.mystery.project.entities.user.User;
 import com.mystery.project.mainconfiguration.Routes;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +32,26 @@ public class CourseController {
     return ResponseEntity.ok(dtoCourses);
   }
 
+  @GetMapping("/{courseId}")
+  public ResponseEntity<GetCourse> getOrganizationCourse(
+      @PathVariable Long courseId, @PathVariable Long organizationId) {
+
+    Course course = courseService.getOrganizationCourse(organizationId, courseId);
+
+    if (course == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    GetCourse courseDto = new GetCourse(course);
+
+    return ResponseEntity.ok(courseDto);
+  }
+
   @PostMapping
   public ResponseEntity<GetCourse> createCourse(
       Authentication authentication,
       @PathVariable Long organizationId,
-      @RequestBody PostCourse postCourse) {
+      @Valid @RequestBody PostCourse postCourse) {
 
     User teacher = (User) authentication.getPrincipal();
 

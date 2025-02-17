@@ -40,4 +40,8 @@ public class CourseService {
 
     return courseRepository.save(course);
   }
+
+  public Course getOrganizationCourse(Long organizationId, Long courseId) {
+    return courseRepository.findCourseByIdAndOrganizationId(courseId, organizationId);
+  }
 }

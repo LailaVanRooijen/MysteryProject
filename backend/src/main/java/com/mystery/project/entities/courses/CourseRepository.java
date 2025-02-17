@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
   List<Course> findByOrganizationId(Long organizationId, Pageable pageable);
+
+  Course findCourseByIdAndOrganizationId(Long courseId, Long organizationId);
 }
