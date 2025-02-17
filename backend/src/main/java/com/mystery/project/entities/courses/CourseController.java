@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,9 +24,9 @@ public class CourseController {
 
   @GetMapping
   public ResponseEntity<List<GetCourse>> getOrganizationCourses(
-      @PathVariable Long organizationId, Authentication authentication) {
+      @PathVariable Long organizationId, Authentication authentication, Pageable pageable) {
 
-    List<Course> courses = courseService.getOrganizationCourses(organizationId);
+    List<Course> courses = courseService.getByOrganization(organizationId, pageable);
     List<GetCourse> dtoCourses = courses.stream().map(GetCourse::new).toList();
 
     return ResponseEntity.ok(dtoCourses);
