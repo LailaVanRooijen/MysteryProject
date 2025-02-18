@@ -12,15 +12,15 @@ public class UserCredentialsValidator {
 
   public static boolean isValidEmailPattern(String email) {
     Matcher matcher = emailPattern.matcher(email);
-    return matcher.matches();
+    return !matcher.matches();
   }
 
   public static boolean isValidPasswordPattern(String password) {
     Matcher matcher = passwordPattern.matcher(password);
-    return matcher.matches();
+    return !matcher.matches();
   }
 
   public static boolean isValidDisplayName(String displayName) {
-    return displayName.length() >= 3;
+    return !(displayName.length() >= 3);
   }
 }

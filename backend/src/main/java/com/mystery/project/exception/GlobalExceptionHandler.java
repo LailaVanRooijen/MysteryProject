@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ProblemDetail> ValidationExceptionsHandler(
+  public ResponseEntity<ProblemDetail> validationExceptionsHandler(
       MethodArgumentNotValidException exception) {
     Map<String, String> errors = new HashMap<>();
     exception
@@ -66,5 +66,12 @@ public class GlobalExceptionHandler {
 
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, message);
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problemDetail);
+  }
+
+  @ExceptionHandler(UserNotFoundException.class)
+  public ResponseEntity<ProblemDetail> userNotFoundExceptionHandler() {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, "User not found");
+    return ResponseEntity.status(problemDetail.getStatus()).body(problemDetail);
   }
 }
