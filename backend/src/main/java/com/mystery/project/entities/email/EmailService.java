@@ -1,5 +1,6 @@
 package com.mystery.project.entities.email;
 
+import com.mystery.project.entities.passwordrequest.exceptions.FailedSendingEmailException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.util.logging.Logger;
@@ -28,10 +29,8 @@ public class EmailService {
       mailSender.send(message);
       log.info("E-mail verzonden naar: " + to);
 
-    } catch (MailException e) {
-      log.info("Exception in Mail: " + e); // todo idk
-    } catch (MessagingException e) {
-      log.info("Exception in Messaging Mail: " + e); // todo idk
+    } catch (MailException | MessagingException e) {
+      throw new FailedSendingEmailException();
     }
   }
 }

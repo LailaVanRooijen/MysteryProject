@@ -47,4 +47,11 @@ public class PasswordResetExceptionHandler {
             "Too many password reset requests are made, wait at least 60 minutes");
     return ResponseEntity.status(problemDetail.getStatus()).body(problemDetail);
   }
+
+  @ExceptionHandler(FailedSendingEmailException.class)
+  public ResponseEntity<ProblemDetail> FailedSendingEmailHandler() {
+    ProblemDetail problemDetail =
+        ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, "Could not send email");
+    return ResponseEntity.status(problemDetail.getStatus()).body(problemDetail);
+  }
 }

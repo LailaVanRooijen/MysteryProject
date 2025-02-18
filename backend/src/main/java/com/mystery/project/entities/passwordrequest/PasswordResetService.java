@@ -41,7 +41,7 @@ public class PasswordResetService {
     if (passwordReset.isExpired()) throw new PasswordResetRequestExpiredException();
 
     // Patch also asks for email, so double check if users are the same
-    if (user.equals(passwordReset.getUser())) {
+    if (!user.equals(passwordReset.getUser())) {
       throw new UnauthorizedPasswordResetRequestException();
     }
 
