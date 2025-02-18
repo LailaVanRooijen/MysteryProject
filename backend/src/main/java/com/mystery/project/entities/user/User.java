@@ -3,6 +3,7 @@ package com.mystery.project.entities.user;
 import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,5 +49,15 @@ public class User implements UserDetails {
   @Override
   public String getUsername() {
     return email;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) return true;
+    if (object == null || getClass() != object.getClass()) return false;
+
+    User user = (User) object;
+
+    return Objects.equals(this.id, user.getId());
   }
 }

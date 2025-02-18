@@ -23,10 +23,15 @@ spring:
       org:
         hibernate:
           SQL: false
-  token:
-    signing:
-      key: ${TOKEN_KEY}
-  security:
-    user:
-      name: ${SECURITY_USER}
-      password: ${SECURITY_PASSWORD}
+  mail:
+    host: ${MAIL_TRAP}
+    port: ${MAIL_TRAP_PORT}
+    username: ${MAIL_TRAP_USERNAME}
+    password: ${MAIL_TRAP_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 3000
+      mail.smtp.writetimeout: 5000
+

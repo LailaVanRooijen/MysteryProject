@@ -27,16 +27,16 @@ public class AuthenticationService {
   private final AuthenticationManager authenticationManager;
 
   public Authentication registerUser(RegisterRequestDto registerRequestDto) {
-    if (!UserCredentialsValidator.isValidEmailPattern(registerRequestDto.email())) {
+    if (UserCredentialsValidator.isValidEmailPattern(registerRequestDto.email())) {
       throw new BadRequestException("Not a valid email address.");
     }
 
-    if (!UserCredentialsValidator.isValidPasswordPattern(registerRequestDto.password())) {
+    if (UserCredentialsValidator.isValidPasswordPattern(registerRequestDto.password())) {
       throw new BadRequestException(
           "Password must be at least 8 characters long, contain at least one letter, one number, and one special character.");
     }
 
-    if (!UserCredentialsValidator.isValidDisplayName(registerRequestDto.displayName())) {
+    if (UserCredentialsValidator.isValidDisplayName(registerRequestDto.displayName())) {
       throw new BadRequestException("Display name should have at least 3 characters");
     }
 
